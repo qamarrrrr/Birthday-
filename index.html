@@ -45,8 +45,8 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   <div class="candle" id="candle"><div class="flame" id="flame"></div><div class="wick"></div><div class="body"></div></div>
   <p class="msg" id="status">✨ Blow into your mic or tap the candle to make a wish!</p>
   <div class="btns">
-    <button class="btn b1" id="music">🎵 Play Birthday Song</button>
-    <button class="btn b2" id="surprise">🎁 Open Birthday Surprise</button>
+    <button class="btn b1" id="music">🎵 Birthday surprise :) </button>
+    <button class="btn b2" id="surprise">🎁 Birthday gift :) </button>
   </div>
 </div>
 
@@ -64,11 +64,9 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   var $=function(id){return document.getElementById(id)};
   var out=false, playing=false, micStream=null;
 
-  /* >>> YouTube IDs (the part after v= in the link) <<< */
-  var VIDEO_ID='-h8pbFY3f54';   /* Surprise video (WALL-E "Ta-da") */
-  var AUDIO_ID='TBE6VOJl_1g';   /* Music button (plays as hidden audio) */
+  var VIDEO_ID='-h8pbFY3f54';   
+  var AUDIO_ID='TBE6VOJl_1g';  
 
-  /* ---------- Confetti ---------- */
   var cv=$('fx'), cx=cv.getContext('2d'), bits=[], raf=null;
   function size(){cv.width=innerWidth;cv.height=innerHeight}
   size(); addEventListener('resize',size);
@@ -104,7 +102,6 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   function initMic(){
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return;
     navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
-      micStream=stream;
       var mc=new (window.AudioContext||window.webkitAudioContext)();
       var an=mc.createAnalyser(); an.fftSize=512;
       mc.createMediaStreamSource(stream).connect(an);
@@ -119,13 +116,13 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   }
   addEventListener('load',initMic);
 
-  var music=$('music'), audioFrame=null, audioLoaded=false;
+  var music=$('music'), audioFrame=null;
   function ytCmd(func){
     if(audioFrame&&audioFrame.contentWindow)
       audioFrame.contentWindow.postMessage(JSON.stringify({event:'command',func:func,args:''}),'*');
   }
   function startSong(){
-    stopMic(); /* release the microphone so it can't interfere with playback */
+    stopMic();
     if(!audioFrame){
       audioFrame=document.createElement('iframe');
       audioFrame.title='Birthday music';
@@ -134,7 +131,6 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
       audioFrame.style.cssText='position:fixed;left:0;bottom:0;width:2px;height:2px;border:0;opacity:0;pointer-events:none';
       audioFrame.src='https://www.youtube.com/embed/'+AUDIO_ID+'?autoplay=1&loop=1&playlist='+AUDIO_ID+'&enablejsapi=1&playsinline=1&controls=0&rel=0';
       document.body.appendChild(audioFrame);
-      audioLoaded=true;
     } else ytCmd('playVideo');
     playing=true; music.textContent='⏸️ Pause Music';
   }
