@@ -1,438 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Happy Birthday Dr. Rafael!</title>
-  
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  
-  <style>
-    :root {
-      --accent-blue: #00f2fe;
-      --accent-coral: #ff6a00;
-      --text-main: #ffffff;
-      --text-muted: #a0aec0;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #0b0d17;
-      background-image: radial-gradient(circle at center, #1a1c2e 0%, #0b0d17 100%);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      overflow-x: hidden;
-    }
-
-    .card-wrapper {
-      max-width: 650px;
-      width: 100%;
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      padding: 0;
-      text-align: center;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      background: linear-gradient(90deg, #ffffff, var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 5px;
-    }
-
-    h2 {
-      font-size: 2.4rem;
-      font-weight: 900;
-      color: var(--accent-blue);
-      margin-bottom: 25px;
-      text-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
-    }
-
-    .hero-section {
-      width: 220px;
-      height: 220px;
-      margin: 0 auto 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .walle-hero {
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 10px 25px rgba(0,0,0,0.8));
-      transition: transform 0.3s ease;
-    }
-
-    .walle-hero:hover {
-      transform: scale(1.05) rotate(-2deg);
-    }
-
-    .candle-container {
-      position: relative;
-      width: 32px;
-      height: 95px;
-      margin: 10px auto 25px;
-      cursor: pointer;
-    }
-
-    .flame {
-      position: absolute;
-      top: -28px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 20px;
-      height: 32px;
-      background: linear-gradient(to top, #ff6a00, #ffee00);
-      border-radius: 50% 50% 35% 35%;
-      box-shadow: 0 0 25px #ff6a00, 0 0 40px #ffee00;
-      animation: flicker 0.1s infinite alternate;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-
-    @keyframes flicker {
-      0% { transform: translateX(-50%) scale(1) rotate(-1deg); }
-      100% { transform: translateX(-50%) scale(1.08) rotate(1deg); }
-    }
-
-    .flame.out {
-      opacity: 0;
-      transform: translateX(-50%) scale(0.1);
-    }
-
-    .wick {
-      position: absolute;
-      top: 3px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 10px;
-      background: #4a4a4a;
-      border-radius: 2px;
-    }
-
-    .candle-body {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 82px;
-      background: linear-gradient(to right, #ff7e5f, #feb47b);
-      border-radius: 8px 8px 5px 5px;
-      box-shadow: inset -4px 0 6px rgba(0,0,0,0.3);
-    }
-
-    .instruction {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      margin-bottom: 30px;
-      font-weight: 500;
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      flex-wrap: wrap;
-      width: 100%;
-    }
-
-    .btn {
-      padding: 16px 30px;
-      border: none;
-      border-radius: 50px;
-      font-size: 1.05rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(0, 114, 255, 0.4);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(0, 114, 255, 0.6);
-    }
-
-    .btn-surprise {
-      background: linear-gradient(90deg, #ff416c 0%, #ff4b2b 100%);
-      color: #fff;
-      box-shadow: 0 4px 20px rgba(255, 65, 108, 0.4);
-    }
-
-    .btn-surprise:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(255, 65, 108, 0.6);
-    }
-
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 1000;
-      padding: 20px;
-    }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .modal-content {
-      background: #111422;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      width: 100%;
-      max-width: 580px;
-      padding: 20px;
-      position: relative;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 2rem;
-      color: #fff;
-      cursor: pointer;
-      background: none;
-      border: none;
-    }
-
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Dr. Rafael!</title>
+<style>
+:root{--blue:#00f2fe;--muted:#a0aec0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0b0d17;background-image:radial-gradient(circle at center,#1a1c2e 0%,#0b0d17 100%);color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;overflow-x:hidden}
+.wrap{max-width:650px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center}
+h1{font-size:2.2rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#fff,var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px}
+h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-shadow:0 0 20px rgba(0,242,254,.6)}
+.hero{width:100%;max-width:380px;margin:0 auto 20px;display:flex;justify-content:center;align-items:center}
+.hero img{width:100%;height:auto;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,.8), 0 0 20px rgba(0,242,254,.2);border:1px solid rgba(0,242,254,.3);transition:transform .3s ease}
+.hero img:hover{transform:scale(1.03) rotate(-1deg)}
+.candle{position:relative;width:32px;height:95px;margin:25px auto 25px;cursor:pointer}
+.flame{position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:20px;height:32px;background:linear-gradient(to top,#ff6a00,#ffee00);border-radius:50% 50% 35% 35%;box-shadow:0 0 25px #ff6a00,0 0 40px #ffee00;animation:flicker .1s infinite alternate;transition:opacity .4s}
+@keyframes flicker{0%{transform:translateX(-50%) scale(1) rotate(-1deg)}100%{transform:translateX(-50%) scale(1.08) rotate(1deg)}}
+.flame.out{opacity:0;animation:none}
+.wick{position:absolute;top:3px;left:50%;transform:translateX(-50%);width:4px;height:10px;background:#4a4a4a;border-radius:2px}
+.body{position:absolute;bottom:0;width:100%;height:82px;background:linear-gradient(to right,#ff7e5f,#feb47b);border-radius:8px 8px 5px 5px;box-shadow:inset -4px 0 6px rgba(0,0,0,.3)}
+.msg{font-size:1.1rem;color:var(--muted);margin-bottom:30px;font-weight:500}
+.btns{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
+.btn{padding:16px 30px;border:none;border-radius:50px;font-size:1.05rem;font-weight:700;cursor:pointer;color:#fff;transition:all .3s}
+.btn:hover{transform:translateY(-3px)}
+.b1{background:linear-gradient(90deg,#00c6ff,#0072ff);box-shadow:0 4px 20px rgba(0,114,255,.4)}
+.b2{background:linear-gradient(90deg,#ff416c,#ff4b2b);box-shadow:0 4px 20px rgba(255,65,108,.4)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:opacity .3s;z-index:1000;padding:20px}
+.modal.on{opacity:1;pointer-events:auto}
+.box{background:#111422;border:1px solid rgba(255,255,255,.15);border-radius:20px;width:100%;max-width:580px;padding:20px;position:relative}
+.x{position:absolute;top:8px;right:15px;font-size:2rem;color:#fff;cursor:pointer;background:none;border:none}
+.vid{position:relative;padding-bottom:56.25%;height:0;border-radius:12px;overflow:hidden;margin-top:15px;background:#000}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.alt{display:block;margin-top:12px;color:var(--blue);font-size:.95rem;text-align:center}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:2000}
+</style>
 </head>
 <body>
-
-  <div class="card-wrapper">
-    <h1>Happy Birthday</h1>
-    <h2>Dr. Rafael!!!</h2>
-
-    <div class="hero-section">
-      <svg class="walle-hero" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- WALL-E Binoculars Eyes -->
-        <path d="M55 60 C55 45, 90 45, 90 60 L85 90 C85 95, 60 95, 60 90 Z" fill="#8E9DAE" stroke="#2D3748" stroke-width="4"/>
-        <path d="M110 60 C110 45, 145 45, 145 60 L140 90 C140 95, 115 95, 115 90 Z" fill="#8E9DAE" stroke="#2D3748" stroke-width="4"/>
-        <circle cx="72" cy="68" r="10" fill="#1A202C"/>
-        <circle cx="128" cy="68" r="10" fill="#1A202C"/>
-        <circle cx="70" cy="66" r="3" fill="#00F2FE"/>
-        <circle cx="126" cy="66" r="3" fill="#00F2FE"/>
-        <rect x="87" y="68" width="26" height="10" rx="3" fill="#4A5568"/>
-        <!-- Neck -->
-        <rect x="92" y="92" width="16" height="18" fill="#A0AEC0" stroke="#2D3748" stroke-width="3"/>
-        <!-- Body Box -->
-        <rect x="55" y="110" width="90" height="65" rx="6" fill="#D69E2E" stroke="#744210" stroke-width="4"/>
-        <rect x="65" y="120" width="70" height="45" rx="4" fill="#ECC94B"/>
-        <!-- WALL-E Logo Band -->
-        <rect x="65" y="125" width="70" height="12" fill="#E53E3E"/>
-        <text x="100" y="134" font-family="sans-serif" font-weight="900" font-size="8" fill="#FFFFFF" text-anchor="middle">WALL·E</text>
-        <!-- Treads -->
-        <path d="M35 150 L55 120 L55 175 L35 175 Z" fill="#4A5568" stroke="#1A202C" stroke-width="3"/>
-        <path d="M165 150 L145 120 L145 175 L165 175 Z" fill="#4A5568" stroke="#1A202C" stroke-width="3"/>
-      </svg>
-    </div>
-
-    <div class="candle-container" id="candle">
-      <div class="flame" id="flame"></div>
-      <div class="wick"></div>
-      <div class="candle-body"></div>
-    </div>
-
-    <p class="instruction" id="status-text">✨ Blow into your mic or click the candle to make a wish!</p>
-
-    <div class="btn-group">
-      <button class="btn btn-primary" id="music-btn">
-        🎵 Play Birthday Song
-      </button>
-      <button class="btn btn-surprise" id="surprise-btn">
-        🎁 Open Birthday Surprise
-      </button>
-    </div>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <h1>Happy Birthday</h1>
+  <h2>Dr. Rafael!!!</h2>
+  <div class="hero">
+    <img src="https://i.ibb.co/3sX8M8K/walle-rubiks.jpg" alt="WALL-E with Rubik's Cube" />
   </div>
-
-  <div class="modal-overlay" id="video-modal">
-    <div class="modal-content">
-      <button class="close-btn" id="close-modal">&times;</button>
-      <h3 style="color: var(--accent-blue); text-align: center; font-size: 1.4rem;">🎉 Ta-da! 🎉</h3>
-      <div class="video-container">
-        <div id="youtube-player"></div>
-      </div>
-    </div>
+  <div class="candle" id="candle"><div class="flame" id="flame"></div><div class="wick"></div><div class="body"></div></div>
+  <p class="msg" id="status">✨ Blow into your mic or tap the candle to make a wish!</p>
+  <div class="btns">
+    <button class="btn b1" id="music">🎵 Play Birthday Song</button>
+    <button class="btn b2" id="surprise">🎁 Open Birthday Surprise</button>
   </div>
+</div>
 
-  <audio id="birthday-audio" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a731b7.mp3?filename=happy-birthday-155461.mp3"></audio>
+<div class="modal" id="modal">
+  <div class="box">
+    <button class="x" id="close" aria-label="Close">&times;</button>
+    <h3 style="color:var(--blue);text-align:center;font-size:1.4rem">🎉 Ta-da! 🎉</h3>
+    <div class="vid"><iframe id="yt" title="Birthday surprise" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+    <a class="alt" href="https://www.youtube.com/watch?v=alS3C1X4448" target="_blank" rel="noopener">Video not loading? Open it on YouTube ↗</a>
+  </div>
+</div>
 
-  <script src="https://www.youtube.com/iframe_api"></script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var out=false, playing=false;
 
-  <script>
-    let isCandleOut = false;
-    let isAudioPlaying = false;
-    let player;
-
-    const flame = document.getElementById('flame');
-    const candle = document.getElementById('candle');
-    const statusText = document.getElementById('status-text');
-    const musicBtn = document.getElementById('music-btn');
-    const surpriseBtn = document.getElementById('surprise-btn');
-    const modal = document.getElementById('video-modal');
-    const closeModal = document.getElementById('close-modal');
-    const audio = document.getElementById('birthday-audio');
-
-    function triggerConfetti() {
-      confetti({
-        particleCount: 120,
-        spread: 80,
-        origin: { y: 0.6 }
-      });
+  var cv=$('fx'), cx=cv.getContext('2d'), bits=[], raf=null;
+  function size(){cv.width=innerWidth;cv.height=innerHeight}
+  size(); addEventListener('resize',size);
+  function confetti(){
+    var cols=['#00f2fe','#ff416c','#ffee00','#ff6a00','#7cff6b','#ffffff'];
+    for(var i=0;i<140;i++){
+      var a=-Math.PI/2+(Math.random()-.5)*1.4, s=8+Math.random()*10;
+      bits.push({x:innerWidth/2,y:innerHeight*.6,vx:Math.cos(a)*s,vy:Math.sin(a)*s,w:6+Math.random()*6,h:4+Math.random()*5,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[i%cols.length],life:1});
     }
-
-    function blowOutCandle() {
-      if (isCandleOut) return;
-      isCandleOut = true;
-      flame.classList.add('out');
-      statusText.innerHTML = "🎉 Your wish has been sent, Dr. Rafael! 🎉";
-      statusText.style.color = "#00f2fe";
-      triggerConfetti();
-    }
-
-    candle.addEventListener('click', blowOutCandle);
-
-    musicBtn.addEventListener('click', () => {
-      if (isAudioPlaying) {
-        audio.pause();
-        musicBtn.innerHTML = '🎵 Play Birthday Song';
-      } else {
-        audio.play().catch(() => {});
-        musicBtn.innerHTML = '⏸️ Pause Music';
-      }
-      isAudioPlaying = !isAudioPlaying;
+    if(!raf) raf=requestAnimationFrame(tick);
+  }
+  function tick(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    bits=bits.filter(function(b){return b.life>0&&b.y<cv.height+20});
+    bits.forEach(function(b){
+      b.vy+=.35;b.vx*=.99;b.x+=b.vx;b.y+=b.vy;b.r+=b.vr;b.life-=.006;
+      cx.save();cx.globalAlpha=Math.max(b.life,0);cx.translate(b.x,b.y);cx.rotate(b.r);cx.fillStyle=b.c;cx.fillRect(-b.w/2,-b.h/2,b.w,b.h);cx.restore();
     });
+    raf=bits.length?requestAnimationFrame(tick):null;
+    if(!bits.length) cx.clearRect(0,0,cv.width,cv.height);
+  }
 
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('youtube-player', {
-        videoId: 'alS3C1X4448',
-        playerVars: {
-          'autoplay': 0,
-          'controls': 1,
-          'rel': 0
-        }
-      });
-    }
+  function blowOut(){
+    if(out) return; out=true;
+    $('flame').classList.add('out');
+    $('status').textContent='🎉 Your wish has been sent, Dr. Rafael! 🎉';
+    $('status').style.color='#00f2fe';
+    confetti();
+  }
+  $('candle').addEventListener('click',blowOut);
 
-    surpriseBtn.addEventListener('click', () => {
-      modal.classList.add('active');
-      triggerConfetti();
-      if (player && player.playVideo) {
-        player.playVideo();
-      }
-      if (isAudioPlaying) {
-        audio.pause();
-        musicBtn.innerHTML = '🎵 Play Birthday Song';
-        isAudioPlaying = false;
-      }
+  var ac=null, timer=null, gain=null;
+  var N={G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784};
+  var song=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
+            ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
+            ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
+            ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]];
+  function playOnce(){
+    var t=ac.currentTime+.05, beat=.45;
+    song.forEach(function(n){
+      var o=ac.createOscillator(), g=ac.createGain();
+      o.type='triangle'; o.frequency.value=N[n[0]];
+      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.25,t+.03);
+      g.gain.exponentialRampToValueAtTime(.001,t+n[1]*beat*.95);
+      o.connect(g); g.connect(gain); o.start(t); o.stop(t+n[1]*beat);
+      t+=n[1]*beat;
     });
+    return (t-ac.currentTime)*1000+600;
+  }
+  function loop(){ if(!playing) return; timer=setTimeout(loop,playOnce()); }
+  function startSong(){
+    try{
+      ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+      if(ac.state==='suspended') ac.resume();
+      if(!gain){gain=ac.createGain();gain.connect(ac.destination)}
+      playing=true; $('music').textContent='⏸️ Pause Music'; loop();
+    }catch(e){}
+  }
+  function stopSong(){
+    playing=false; clearTimeout(timer);
+    if(gain){gain.disconnect();gain=null}
+    $('music').textContent='🎵 Play Birthday Song';
+  }
+  $('music').addEventListener('click',function(){playing?stopSong():startSong()});
 
-    closeModal.addEventListener('click', () => {
-      modal.classList.remove('active');
-      if (player && player.pauseVideo) {
-        player.pauseVideo();
-      }
-    });
+  var modal=$('modal'), yt=$('yt');
+  $('surprise').addEventListener('click',function(){
+    stopSong();
+    yt.src='https://www.youtube-nocookie.com/embed/alS3C1X4448?autoplay=1&rel=0';
+    modal.classList.add('on'); confetti();
+  });
+  function closeIt(){modal.classList.remove('on'); yt.src='about:blank'}
+  $('close').addEventListener('click',closeIt);
+  modal.addEventListener('click',function(e){if(e.target===modal) closeIt()});
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.remove('active');
-        if (player && player.pauseVideo) {
-          player.pauseVideo();
-        }
-      }
-    });
-
-    async function initMicrophone() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const analyser = audioContext.createAnalyser();
-        const microphone = audioContext.createMediaStreamSource(stream);
-        const javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
-
-        analyser.smoothingTimeConstant = 0.8;
-        analyser.fftSize = 1024;
-
-        microphone.connect(analyser);
-        analyser.connect(javascriptNode);
-        javascriptNode.connect(audioContext.destination);
-
-        javascriptNode.onaudioprocess = () => {
-          if (isCandleOut) return;
-          const array = new Uint8Array(analyser.frequencyBinCount);
-          analyser.getByteFrequencyData(array);
-          let values = 0;
-          for (let i = 0; i < array.length; i++) {
-            values += array[i];
-          }
-          const average = values / array.length;
-          if (average > 45) {
-            blowOutCandle();
-          }
-        };
-      } catch (err) {}
-    }
-
-    window.addEventListener('DOMContentLoaded', initMicrophone);
-  </script>
+  function initMic(){
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return;
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      var mc=new (window.AudioContext||window.webkitAudioContext)();
+      var an=mc.createAnalyser(); an.fftSize=512;
+      mc.createMediaStreamSource(stream).connect(an);
+      var buf=new Uint8Array(an.fftSize);
+      (function check(){
+        if(out) return;
+        an.getByteTimeDomainData(buf);
+        var sum=0; for(var i=0;i<buf.length;i++){var v=(buf[i]-128)/128; sum+=v*v}
+        if(Math.sqrt(sum/buf.length)>.25) blowOut(); else requestAnimationFrame(check);
+      })();
+    }).catch(function(){});
+  }
+  addEventListener('load',initMic);
+})();
+</script>
 </body>
 </html>
