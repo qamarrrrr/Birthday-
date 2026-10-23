@@ -12,6 +12,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#000000;
 h1{font-size:2.2rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#ffffff;text-shadow:0 0 15px rgba(255,255,255,0.4);margin-bottom:5px}
 h2{font-size:2.4rem;font-weight:900;color:#ffffff;margin-bottom:25px;text-shadow:0 0 20px rgba(255,255,255,0.6)}
 
+/* WALL-E Static Image Hero */
 .hero {
   width: 100%;
   max-width: 440px;
@@ -42,8 +43,13 @@ h2{font-size:2.4rem;font-weight:900;color:#ffffff;margin-bottom:25px;text-shadow
 .btns{display:flex;gap:15px;justify-content:center;flex-wrap:wrap}
 .btn{padding:16px 30px;border:none;border-radius:50px;font-size:1.05rem;font-weight:700;cursor:pointer;color:#fff;transition:all .3s}
 .btn:hover{transform:translateY(-3px)}
-.b1{background:linear-gradient(90deg,#00c6ff,#0072ff);box-shadow:0 4px 20px rgba(0,114,255,.4)}
-.b2{background:linear-gradient(90deg,#ff416c,#ff4b2b);box-shadow:0 4px 20px rgba(255,65,108,.4)}
+
+/* Candle Color Style for Both Buttons */
+.b1, .b2 {
+  background: linear-gradient(90deg,#ff7e5f,#feb47b);
+  box-shadow: 0 4px 20px rgba(255,126,95,.4);
+}
+
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.95);display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:opacity .3s;z-index:1000;padding:20px}
 .modal.on{opacity:1;pointer-events:auto}
 .box{background:#111422;border:1px solid rgba(255,255,255,.2);border-radius:20px;width:100%;max-width:580px;padding:20px;position:relative}
@@ -60,6 +66,7 @@ h2{font-size:2.4rem;font-weight:900;color:#ffffff;margin-bottom:25px;text-shadow
   <h1>Happy Birthday</h1>
   <h2>Dr. Rafael!!!</h2>
   
+  <!-- Embedded High-Res Image -->
   <div class="hero">
     <img src="https://m.media-amazon.com/images/I/71w3A8pXm9L._AC_SL1500_.jpg" alt="WALL-E with Rubik's Cube">
   </div>
