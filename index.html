@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Happy Birthday Dr. Rafael!</title>
   
-  <!-- Canvas Confetti Library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   
   <style>
@@ -35,7 +34,6 @@
       overflow-x: hidden;
     }
 
-    /* Completely Borderless Layout */
     .card-wrapper {
       max-width: 650px;
       width: 100%;
@@ -69,7 +67,6 @@
       text-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
     }
 
-    /* Hero WALL-E Display */
     .hero-section {
       width: 220px;
       height: 220px;
@@ -90,7 +87,6 @@
       transform: scale(1.05) rotate(-2deg);
     }
 
-    /* Candle & Flame Section */
     .candle-container {
       position: relative;
       width: 32px;
@@ -151,7 +147,6 @@
       font-weight: 500;
     }
 
-    /* Buttons */
     .btn-group {
       display: flex;
       gap: 15px;
@@ -196,7 +191,6 @@
       box-shadow: 0 8px 25px rgba(255, 65, 108, 0.6);
     }
 
-    /* Video Modal */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -267,7 +261,6 @@
     <h1>Happy Birthday</h1>
     <h2>Dr. Rafael!!!</h2>
 
-    <!-- Embedded WALL-E Graphic (100% Reliable, No Broken Links) -->
     <div class="hero-section">
       <svg class="walle-hero" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- WALL-E Binoculars Eyes -->
@@ -292,7 +285,6 @@
       </svg>
     </div>
 
-    <!-- Interactive Candle -->
     <div class="candle-container" id="candle">
       <div class="flame" id="flame"></div>
       <div class="wick"></div>
@@ -311,7 +303,6 @@
     </div>
   </div>
 
-  <!-- Video Modal -->
   <div class="modal-overlay" id="video-modal">
     <div class="modal-content">
       <button class="close-btn" id="close-modal">&times;</button>
@@ -322,10 +313,8 @@
     </div>
   </div>
 
-  <!-- Audio Element -->
   <audio id="birthday-audio" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a731b7.mp3?filename=happy-birthday-155461.mp3"></audio>
 
-  <!-- YouTube Iframe API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
