@@ -11,10 +11,30 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0b0d17;
 .wrap{max-width:650px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center}
 h1{font-size:2.2rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#fff,var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px}
 h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-shadow:0 0 20px rgba(0,242,254,.6)}
-.hero{width:100%;max-width:380px;margin:0 auto 20px;display:flex;justify-content:center;align-items:center}
-.hero img{width:100%;height:auto;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,.8),0 0 20px rgba(0,242,254,.2);border:1px solid rgba(0,242,254,.3);transition:transform .3s ease}
-.hero img:hover{transform:scale(1.03) rotate(-1deg)}
-.candle{position:relative;width:32px;height:95px;margin:35px auto 25px;cursor:pointer}
+
+/* Video Hero Section */
+.hero-video {
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,.8), 0 0 25px rgba(0,242,254,.25);
+  border: 1px solid rgba(0,242,254,.4);
+  margin: 0 auto 20px;
+  background: #000;
+}
+.hero-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.candle{position:relative;width:32px;height:95px;margin:25px auto 25px;cursor:pointer}
 .flame{position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:20px;height:32px;background:linear-gradient(to top,#ff6a00,#ffee00);border-radius:50% 50% 35% 35%;box-shadow:0 0 25px #ff6a00,0 0 40px #ffee00;animation:flicker .1s infinite alternate;transition:opacity .4s}
 @keyframes flicker{0%{transform:translateX(-50%) scale(1) rotate(-1deg)}100%{transform:translateX(-50%) scale(1.08) rotate(1deg)}}
 .flame.out{opacity:0;animation:none}
@@ -41,12 +61,17 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
 <div class="wrap">
   <h1>Happy Birthday</h1>
   <h2>Dr. Rafael!!!</h2>
-  <div class="hero"><img src="https://i.redd.it/u2w653p1f8u81.jpg" alt="WALL-E with Rubik's Cube"></div>
+  
+  <!-- WALL-E Dancing Video Hero -->
+  <div class="hero-video">
+    <iframe src="https://www.youtube.com/embed/NPW3mvAN0Rc?autoplay=0&mute=1&loop=1&playlist=NPW3mvAN0Rc&controls=1&rel=0&playsinline=1" title="WALL-E Define Dancing" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
   <div class="candle" id="candle"><div class="flame" id="flame"></div><div class="wick"></div><div class="body"></div></div>
   <p class="msg" id="status">✨ Blow into your mic or tap the candle to make a wish!</p>
   <div class="btns">
-    <button class="btn b1" id="music">🎵 Birthday surprise :) </button>
-    <button class="btn b2" id="surprise">🎁 Birthday gift :) </button>
+    <button class="btn b1" id="music">🎵 Surprise! </button>
+    <button class="btn b2" id="surprise">🎁 Double Surprise! :) </button>
   </div>
 </div>
 
@@ -64,9 +89,10 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   var $=function(id){return document.getElementById(id)};
   var out=false, playing=false, micStream=null;
 
-  var VIDEO_ID='-h8pbFY3f54';   
-  var AUDIO_ID='TBE6VOJl_1g';  
+  var VIDEO_ID='-h8pbFY3f54';   /* Surprise video modal */
+  var AUDIO_ID='TBE6VOJl_1g';   /* Music button song */
 
+  /* ---------- Confetti ---------- */
   var cv=$('fx'), cx=cv.getContext('2d'), bits=[], raf=null;
   function size(){cv.width=innerWidth;cv.height=innerHeight}
   size(); addEventListener('resize',size);
@@ -102,6 +128,7 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   function initMic(){
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return;
     navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      micStream=stream;
       var mc=new (window.AudioContext||window.webkitAudioContext)();
       var an=mc.createAnalyser(); an.fftSize=512;
       mc.createMediaStreamSource(stream).connect(an);
@@ -136,7 +163,7 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   }
   function stopSong(){
     if(playing) ytCmd('pauseVideo');
-    playing=false; music.textContent='🎵 Play Birthday Song';
+    playing=false; music.textContent='🎵 Play Birthday S';
   }
   music.addEventListener('click',function(){playing?stopSong():startSong()});
 
