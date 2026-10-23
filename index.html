@@ -64,9 +64,11 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   var $=function(id){return document.getElementById(id)};
   var out=false, playing=false, micStream=null;
 
-  /* >>> Put your YouTube video ID here (the part after v= in the link) <<< */
-  var VIDEO_ID='https://youtu.be/-h8pbFY3f54?si=GMIJ1RGitOHGpA6e';
+  /* >>> YouTube IDs (the part after v= in the link) <<< */
+  var VIDEO_ID='-h8pbFY3f54';   /* Surprise video (WALL-E "Ta-da") */
+  var AUDIO_ID='TBE6VOJl_1g';   /* Music button (plays as hidden audio) */
 
+  /* ---------- Confetti ---------- */
   var cv=$('fx'), cx=cv.getContext('2d'), bits=[], raf=null;
   function size(){cv.width=innerWidth;cv.height=innerHeight}
   size(); addEventListener('resize',size);
@@ -117,46 +119,30 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   }
   addEventListener('load',initMic);
 
-  var player=null;
-  function makeSongURL(){
-    var N={G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784};
-    var song=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
-              ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
-              ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
-              ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]];
-    var sr=22050, beat=.45, total=0, i, k;
-    song.forEach(function(n){total+=n[1]*beat});
-    var len=Math.floor((total+.8)*sr), data=new Int16Array(len), pos=0;
-    song.forEach(function(n){
-      var f=N[n[0]], cnt=Math.floor(n[1]*beat*sr);
-      for(i=0;i<cnt;i++){
-        var t=i/sr, env=Math.min(1,t/.02)*Math.exp(-2.2*t/(n[1]*beat));
-        var v=Math.sin(2*Math.PI*f*t)+.3*Math.sin(4*Math.PI*f*t)+.1*Math.sin(6*Math.PI*f*t);
-        data[pos+i]=Math.max(-32768,Math.min(32767,v*env*9000));
-      }
-      pos+=cnt;
-    });
-    var buf=new ArrayBuffer(44+len*2), dv=new DataView(buf);
-    function str(o,x){for(k=0;k<x.length;k++)dv.setUint8(o+k,x.charCodeAt(k))}
-    str(0,'RIFF');dv.setUint32(4,36+len*2,true);str(8,'WAVE');str(12,'fmt ');
-    dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
-    dv.setUint32(24,sr,true);dv.setUint32(28,sr*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);
-    str(36,'data');dv.setUint32(40,len*2,true);
-    for(i=0;i<len;i++) dv.setInt16(44+i*2,data[i],true);
-    return URL.createObjectURL(new Blob([buf],{type:'audio/wav'}));
+  var music=$('music'), audioFrame=null, audioLoaded=false;
+  function ytCmd(func){
+    if(audioFrame&&audioFrame.contentWindow)
+      audioFrame.contentWindow.postMessage(JSON.stringify({event:'command',func:func,args:''}),'*');
   }
   function startSong(){
     stopMic(); /* release the microphone so it can't interfere with playback */
-    if(!player){player=new Audio(makeSongURL());player.loop=true}
-    var p=player.play();
-    if(p&&p.catch) p.catch(function(){playing=false;$('music').textContent='🔇 Tap again to play'});
-    playing=true; $('music').textContent='⏸️ Pause Music';
+    if(!audioFrame){
+      audioFrame=document.createElement('iframe');
+      audioFrame.title='Birthday music';
+      audioFrame.setAttribute('allow','autoplay; encrypted-media');
+      audioFrame.setAttribute('referrerpolicy','strict-origin-when-cross-origin');
+      audioFrame.style.cssText='position:fixed;left:0;bottom:0;width:2px;height:2px;border:0;opacity:0;pointer-events:none';
+      audioFrame.src='https://www.youtube.com/embed/'+AUDIO_ID+'?autoplay=1&loop=1&playlist='+AUDIO_ID+'&enablejsapi=1&playsinline=1&controls=0&rel=0';
+      document.body.appendChild(audioFrame);
+      audioLoaded=true;
+    } else ytCmd('playVideo');
+    playing=true; music.textContent='⏸️ Pause Music';
   }
   function stopSong(){
-    playing=false; if(player) player.pause();
-    $('music').textContent='🎵 Play Birthday Song';
+    if(playing) ytCmd('pauseVideo');
+    playing=false; music.textContent='🎵 Play Birthday Song';
   }
-  $('music').addEventListener('click',function(){playing?stopSong():startSong()});
+  music.addEventListener('click',function(){playing?stopSong():startSong()});
 
   var modal=$('modal'), yt=$('yt');
   $('ytlink').href='https://www.youtube.com/watch?v='+VIDEO_ID;
