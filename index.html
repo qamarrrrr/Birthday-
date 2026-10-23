@@ -12,9 +12,9 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0b0d17;
 h1{font-size:2.2rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,#fff,var(--blue));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px}
 h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-shadow:0 0 20px rgba(0,242,254,.6)}
 .hero{width:100%;max-width:380px;margin:0 auto 20px;display:flex;justify-content:center;align-items:center}
-.hero img{width:100%;height:auto;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,.8), 0 0 20px rgba(0,242,254,.2);border:1px solid rgba(0,242,254,.3);transition:transform .3s ease}
+.hero img{width:100%;height:auto;border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,.8),0 0 20px rgba(0,242,254,.2);border:1px solid rgba(0,242,254,.3);transition:transform .3s ease}
 .hero img:hover{transform:scale(1.03) rotate(-1deg)}
-.candle{position:relative;width:32px;height:95px;margin:25px auto 25px;cursor:pointer}
+.candle{position:relative;width:32px;height:95px;margin:35px auto 25px;cursor:pointer}
 .flame{position:absolute;top:-28px;left:50%;transform:translateX(-50%);width:20px;height:32px;background:linear-gradient(to top,#ff6a00,#ffee00);border-radius:50% 50% 35% 35%;box-shadow:0 0 25px #ff6a00,0 0 40px #ffee00;animation:flicker .1s infinite alternate;transition:opacity .4s}
 @keyframes flicker{0%{transform:translateX(-50%) scale(1) rotate(-1deg)}100%{transform:translateX(-50%) scale(1.08) rotate(1deg)}}
 .flame.out{opacity:0;animation:none}
@@ -41,9 +41,7 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
 <div class="wrap">
   <h1>Happy Birthday</h1>
   <h2>Dr. Rafael!!!</h2>
-  <div class="hero">
-    <img src="walle.jpg" alt="WALL-E with Rubik's Cube" />
-  </div>
+  <div class="hero"><img src="walle.jpg" alt="WALL-E with Rubik's Cube"></div>
   <div class="candle" id="candle"><div class="flame" id="flame"></div><div class="wick"></div><div class="body"></div></div>
   <p class="msg" id="status">✨ Blow into your mic or tap the candle to make a wish!</p>
   <div class="btns">
@@ -56,15 +54,18 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   <div class="box">
     <button class="x" id="close" aria-label="Close">&times;</button>
     <h3 style="color:var(--blue);text-align:center;font-size:1.4rem">🎉 Ta-da! 🎉</h3>
-    <div class="vid"><iframe id="yt" title="Birthday surprise" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
-    <a class="alt" href="https://www.youtube.com/watch?v=alS3C1X4448" target="_blank" rel="noopener">Video not loading? Open it on YouTube ↗</a>
+    <div class="vid"><iframe id="yt" title="Birthday surprise" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+    <a class="alt" id="ytlink" href="#" target="_blank" rel="noopener">Video not loading? Open it on YouTube ↗</a>
   </div>
 </div>
 
 <script>
 (function(){
   var $=function(id){return document.getElementById(id)};
-  var out=false, playing=false;
+  var out=false, playing=false, micStream=null;
+
+  /* >>> Put your YouTube video ID here (the part after v= in the link) <<< */
+  var VIDEO_ID='https://youtu.be/-h8pbFY3f54?si=GMIJ1RGitOHGpA6e';
 
   var cv=$('fx'), cx=cv.getContext('2d'), bits=[], raf=null;
   function size(){cv.width=innerWidth;cv.height=innerHeight}
@@ -88,8 +89,9 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
     if(!bits.length) cx.clearRect(0,0,cv.width,cv.height);
   }
 
+  function stopMic(){ if(micStream){micStream.getTracks().forEach(function(t){t.stop()});micStream=null} }
   function blowOut(){
-    if(out) return; out=true;
+    if(out) return; out=true; stopMic();
     $('flame').classList.add('out');
     $('status').textContent='🎉 Your wish has been sent, Dr. Rafael! 🎉';
     $('status').style.color='#00f2fe';
@@ -97,59 +99,16 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
   }
   $('candle').addEventListener('click',blowOut);
 
-  var ac=null, timer=null, gain=null;
-  var N={G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784};
-  var song=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
-            ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
-            ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
-            ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]];
-  function playOnce(){
-    var t=ac.currentTime+.05, beat=.45;
-    song.forEach(function(n){
-      var o=ac.createOscillator(), g=ac.createGain();
-      o.type='triangle'; o.frequency.value=N[n[0]];
-      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.25,t+.03);
-      g.gain.exponentialRampToValueAtTime(.001,t+n[1]*beat*.95);
-      o.connect(g); g.connect(gain); o.start(t); o.stop(t+n[1]*beat);
-      t+=n[1]*beat;
-    });
-    return (t-ac.currentTime)*1000+600;
-  }
-  function loop(){ if(!playing) return; timer=setTimeout(loop,playOnce()); }
-  function startSong(){
-    try{
-      ac=ac||new (window.AudioContext||window.webkitAudioContext)();
-      if(ac.state==='suspended') ac.resume();
-      if(!gain){gain=ac.createGain();gain.connect(ac.destination)}
-      playing=true; $('music').textContent='⏸️ Pause Music'; loop();
-    }catch(e){}
-  }
-  function stopSong(){
-    playing=false; clearTimeout(timer);
-    if(gain){gain.disconnect();gain=null}
-    $('music').textContent='🎵 Play Birthday Song';
-  }
-  $('music').addEventListener('click',function(){playing?stopSong():startSong()});
-
-  var modal=$('modal'), yt=$('yt');
-  $('surprise').addEventListener('click',function(){
-    stopSong();
-    yt.src='https://www.youtube-nocookie.com/embed/alS3C1X4448?autoplay=1&rel=0';
-    modal.classList.add('on'); confetti();
-  });
-  function closeIt(){modal.classList.remove('on'); yt.src='about:blank'}
-  $('close').addEventListener('click',closeIt);
-  modal.addEventListener('click',function(e){if(e.target===modal) closeIt()});
-
   function initMic(){
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia) return;
     navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      micStream=stream;
       var mc=new (window.AudioContext||window.webkitAudioContext)();
       var an=mc.createAnalyser(); an.fftSize=512;
       mc.createMediaStreamSource(stream).connect(an);
       var buf=new Uint8Array(an.fftSize);
       (function check(){
-        if(out) return;
+        if(out||!micStream) return;
         an.getByteTimeDomainData(buf);
         var sum=0; for(var i=0;i<buf.length;i++){var v=(buf[i]-128)/128; sum+=v*v}
         if(Math.sqrt(sum/buf.length)>.25) blowOut(); else requestAnimationFrame(check);
@@ -157,6 +116,58 @@ h2{font-size:2.4rem;font-weight:900;color:var(--blue);margin-bottom:25px;text-sh
     }).catch(function(){});
   }
   addEventListener('load',initMic);
+
+  var player=null;
+  function makeSongURL(){
+    var N={G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784};
+    var song=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],
+              ['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
+              ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],
+              ['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',2]];
+    var sr=22050, beat=.45, total=0, i, k;
+    song.forEach(function(n){total+=n[1]*beat});
+    var len=Math.floor((total+.8)*sr), data=new Int16Array(len), pos=0;
+    song.forEach(function(n){
+      var f=N[n[0]], cnt=Math.floor(n[1]*beat*sr);
+      for(i=0;i<cnt;i++){
+        var t=i/sr, env=Math.min(1,t/.02)*Math.exp(-2.2*t/(n[1]*beat));
+        var v=Math.sin(2*Math.PI*f*t)+.3*Math.sin(4*Math.PI*f*t)+.1*Math.sin(6*Math.PI*f*t);
+        data[pos+i]=Math.max(-32768,Math.min(32767,v*env*9000));
+      }
+      pos+=cnt;
+    });
+    var buf=new ArrayBuffer(44+len*2), dv=new DataView(buf);
+    function str(o,x){for(k=0;k<x.length;k++)dv.setUint8(o+k,x.charCodeAt(k))}
+    str(0,'RIFF');dv.setUint32(4,36+len*2,true);str(8,'WAVE');str(12,'fmt ');
+    dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+    dv.setUint32(24,sr,true);dv.setUint32(28,sr*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);
+    str(36,'data');dv.setUint32(40,len*2,true);
+    for(i=0;i<len;i++) dv.setInt16(44+i*2,data[i],true);
+    return URL.createObjectURL(new Blob([buf],{type:'audio/wav'}));
+  }
+  function startSong(){
+    stopMic(); /* release the microphone so it can't interfere with playback */
+    if(!player){player=new Audio(makeSongURL());player.loop=true}
+    var p=player.play();
+    if(p&&p.catch) p.catch(function(){playing=false;$('music').textContent='🔇 Tap again to play'});
+    playing=true; $('music').textContent='⏸️ Pause Music';
+  }
+  function stopSong(){
+    playing=false; if(player) player.pause();
+    $('music').textContent='🎵 Play Birthday Song';
+  }
+  $('music').addEventListener('click',function(){playing?stopSong():startSong()});
+
+  var modal=$('modal'), yt=$('yt');
+  $('ytlink').href='https://www.youtube.com/watch?v='+VIDEO_ID;
+  $('surprise').addEventListener('click',function(){
+    stopSong(); stopMic();
+    yt.src='https://www.youtube.com/embed/'+VIDEO_ID+'?autoplay=1&rel=0&playsinline=1';
+    modal.classList.add('on'); confetti();
+  });
+  function closeIt(){modal.classList.remove('on'); yt.src='about:blank'}
+  $('close').addEventListener('click',closeIt);
+  modal.addEventListener('click',function(e){if(e.target===modal) closeIt()});
 })();
 </script>
 </body>
